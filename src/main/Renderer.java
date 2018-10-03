@@ -50,10 +50,6 @@ public class Renderer {
                 int a = x1;
                 x1 = x2;
                 x2 = a;
-
-                a = y1;
-                y1 = y2;
-                y2 = a;
             }
 
             for (int x = x1; x <= x2; x++) {
@@ -62,6 +58,17 @@ public class Renderer {
             }
         } else {
             // řídící osa Y
+            if (y1 > y2) {
+                int a = y1;
+                y1 = y2;
+                y2 = a;
+            }
+
+            for (int y = y1; y <= y2; y++) {
+                int x = Math.round((y - q) / k);
+                drawPixel(x, y, color);
+            }
+
         }
     }
 
