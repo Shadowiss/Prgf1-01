@@ -111,6 +111,7 @@ public class Renderer {
             drawPixel(Math.round(x), Math.round(y), color);
             x += g;
             y += h;
+            
         }
     }
 }
