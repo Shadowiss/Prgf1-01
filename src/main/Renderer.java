@@ -79,33 +79,45 @@ public class Renderer {
         }
     }
     public void drawLineDDA(int x1, int y1, int x2, int y2, int color){
-         float k, g, h;
-         int dx, dy;
+        float k, g, h; //G = PŘÍRŮSTEK X, H = PŘÍRŮSTEK Y
+        int dy = y2 - y1;
+        int dx = x2 - x1;
+        k = dy / (float) dx;
 
-         dx = x2 - x1;
-         dy = y2 - y1;
-         k = (float) dy/dx;
-
-
-         float x = x1;
-         float y = y1;
-
-        if(dx > dy){
+        //určení řídící osy
+        if (Math.abs(dx) > Math.abs(dy)) {
             g = 1;
             h = k;
-        }else{
-            g = 1/k;
+            if (x1 > x2) { // prohození
+                int temp = x1;
+                x1 = x2;
+                x2 = temp;
+                temp = y1;
+                y1 = y2;
+                y2 = temp;
+            }
+        } else {
+            g = 1 / k;
             h = 1;
+            if (y1 > y2) { //otočení
+                int temp = x1;
+                x1 = x2;
+                x2 = temp;
+                temp = y1;
+                y1 = y2;
+                y2 = temp;
+            }
         }
 
+        float x = x1;
+        float y = y1;
+        int max = Math.max(Math.abs(dx), Math.abs(dy));
 
-
-         for(int i = 0; i <= Math.max(Math.abs(dx), Math.abs(dy)); i++){
-           drawPixel(Math.round(x),Math.round(y), color);
+        for (int i = 0; i <= max; i++) {
+            drawPixel(Math.round(x), Math.round(y), color);
             x += g;
             y += h;
         }
-
 
     }
 }

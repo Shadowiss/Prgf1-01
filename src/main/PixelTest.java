@@ -1,4 +1,5 @@
 package main;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -13,6 +14,7 @@ public class PixelTest {
     private BufferedImage img; // objekt pro zápis pixelů
     private Canvas canvas; // plátno pro vykreslení BufferedImage
     private Renderer renderer;
+    private SeedFill seedFill;
 
     public PixelTest() {
         window = new JFrame();
@@ -29,40 +31,48 @@ public class PixelTest {
         canvas = new Canvas();
 
         window.add(canvas); // vložit plátno do okna
-        window.setVisible(true); // zorabzit okno
+        window.setVisible(true); // zobrazit okno
 
         renderer = new Renderer(img, canvas);
 
+        seedFill = new SeedFill();
+        seedFill.setBufferedImage(img);
+
         renderer.drawPixel(100, 50, Color.GREEN.getRGB());
         // 0x00ff00 == Color.GREEN.getRGB()
+        // renderer.drawLine(0, 1, 8, 4, 0x00ff00);
 
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                renderer.drawPixel(e.getX(), e.getY(), 0xffffff);
+                if (e.isControlDown()) {
+                    seedFill.init(e.getX(), e.getY(), 0x00ffff);
+                    seedFill.fill();
+                } else {
+                    renderer.drawPixel(e.getX(), e.getY(), 0xffffff);
+                }
             }
         });
-
         canvas.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 renderer.clear();
-                renderer.drawLine(400,300, e.getX(), e.getY(), 0xffffff);
+                renderer.drawLineDDA(400, 300, e.getX(), e.getY(), 0xffff00);
             }
         });
-
         canvas.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_C){
+                //System.out.println(e.getKeyCode());
+                // na klávesu C vymazat plátno
+                if (e.getKeyCode() == KeyEvent.VK_C) {
                     renderer.clear();
                 }
             }
         });
+        // chceme, aby canvas měl focus hned při spuštění
         canvas.requestFocus();
     }
-
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(PixelTest::new);
